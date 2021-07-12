@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -32,7 +33,7 @@ namespace Authn
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = "GoogleOpenID";
             })
                 .AddCookie(options => {
                     options.LoginPath = "/login";
@@ -42,9 +43,9 @@ namespace Authn
                         OnSigningIn = async context =>
                         {
                             var principal = context.Principal;
-                            if(principal.HasClaim(c => c.Type == ClaimTypes.NameIdentifier))
+                            if (principal.HasClaim(c => c.Type == ClaimTypes.NameIdentifier))
                             {
-                                if(principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value == "gerard")
+                                if (principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value == "gerard")
                                 {
                                     var claimsIdentity = principal.Identity as ClaimsIdentity;
                                     claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, "Admin"));
@@ -62,12 +63,41 @@ namespace Authn
                         }
 
                     };
-                }).AddGoogle(options =>
+                })
+                .AddOpenIdConnect("GoogleOpenID", options =>
                 {
+                    options.Authority = "https://accounts.google.com";
                     options.ClientId = "695986022435-69hdlu11mk1oaq4u9gddvv5jlhihvb44.apps.googleusercontent.com";
                     options.ClientSecret = "YrpJF6PtmbOuZxUNNbsavn5a";
                     options.CallbackPath = "/auth";
+                    options.SaveTokens = true;
+                    options.Events = new OpenIdConnectEvents()
+                    {
+                        OnTokenValidated = async context =>
+                        {
+                        if (context.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value == "112365468345858178959")
+                            {
+                                var claim = new Claim(ClaimTypes.Role, "Admin");
+                                var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
+                                claimsIdentity.AddClaim(claim);
+
+
+                            }
+
+
+
+                               
+                        }
+                    };
                 });
+
+                //.AddGoogle(options =>
+                //{
+                //    options.ClientId = "695986022435-69hdlu11mk1oaq4u9gddvv5jlhihvb44.apps.googleusercontent.com";
+                //    options.ClientSecret = "YrpJF6PtmbOuZxUNNbsavn5a";
+                //    options.CallbackPath = "/auth";
+                //    options.AuthorizationEndpoint += "?prompt=consent";
+                //});
 
 
 
