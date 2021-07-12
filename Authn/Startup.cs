@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,7 +28,12 @@ namespace Authn
         {
             services.AddControllersWithViews();
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme) previous scheme but jyst for cookies
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            })
                 .AddCookie(options => {
                     options.LoginPath = "/login";
                     options.AccessDeniedPath = "/denied";
@@ -56,6 +62,11 @@ namespace Authn
                         }
 
                     };
+                }).AddGoogle(options =>
+                {
+                    options.ClientId = "695986022435-69hdlu11mk1oaq4u9gddvv5jlhihvb44.apps.googleusercontent.com";
+                    options.ClientSecret = "YrpJF6PtmbOuZxUNNbsavn5a";
+                    options.CallbackPath = "/auth";
                 });
 
 

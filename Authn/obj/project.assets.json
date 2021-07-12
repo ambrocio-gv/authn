@@ -2,6 +2,18 @@
   "version": 3,
   "targets": {
     "net5.0": {
+      "Microsoft.AspNetCore.Authentication.Google/5.0.7": {
+        "type": "package",
+        "compile": {
+          "lib/net5.0/Microsoft.AspNetCore.Authentication.Google.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/Microsoft.AspNetCore.Authentication.Google.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "Microsoft.AspNetCore.Mvc.Razor.Extensions/5.0.7": {
         "type": "package",
         "dependencies": {
@@ -261,6 +273,21 @@
     }
   },
   "libraries": {
+    "Microsoft.AspNetCore.Authentication.Google/5.0.7": {
+      "sha512": "LsI/AjzQDtJLSU/osWfIOSMT5JrOOphX0MXRJ4piMzrKOcqUzvXY4jbb7o59fsyQTyDz13eH70qKvqbMwXF6qw==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.authentication.google/5.0.7",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net5.0/Microsoft.AspNetCore.Authentication.Google.dll",
+        "lib/net5.0/Microsoft.AspNetCore.Authentication.Google.xml",
+        "microsoft.aspnetcore.authentication.google.5.0.7.nupkg.sha512",
+        "microsoft.aspnetcore.authentication.google.nuspec"
+      ]
+    },
     "Microsoft.AspNetCore.Mvc.Razor.Extensions/5.0.7": {
       "sha512": "kg5RDNGHq9WRsJOE5AiEg0UaT0qGdlChqzLkpbq+kN65ZBUT5q23mje6n44tECdGnK5BVPZzwwD69CLnpC0fsg==",
       "type": "package",
@@ -732,6 +759,7 @@
   },
   "projectFileDependencyGroups": {
     "net5.0": [
+      "Microsoft.AspNetCore.Authentication.Google >= 5.0.7",
       "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation >= 5.0.7"
     ]
   },
@@ -782,6 +810,10 @@
       "net5.0": {
         "targetAlias": "net5.0",
         "dependencies": {
+          "Microsoft.AspNetCore.Authentication.Google": {
+            "target": "Package",
+            "version": "[5.0.7, )"
+          },
           "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": {
             "target": "Package",
             "version": "[5.0.7, )"

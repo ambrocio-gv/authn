@@ -38,7 +38,8 @@ namespace Authn.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
+        [Authorize]
         public IActionResult Secured()  
         {
             return View();

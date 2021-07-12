@@ -358,3 +358,4 @@ C:\Users\ASUS\Source\Repos\Authn\Authn\obj\Debug\net5.0\Authn.pdb
 C:\Users\ASUS\Source\Repos\Authn\Authn\obj\Debug\net5.0\Authn.genruntimeconfig.cache
 C:\Users\ASUS\Source\Repos\Authn\Authn\obj\Debug\net5.0\Razor\Views\Home\Login.cshtml.g.cs
 C:\Users\ASUS\Source\Repos\Authn\Authn\obj\Debug\net5.0\Razor\Views\Home\Denied.cshtml.g.cs
+C:\Users\ASUS\Source\Repos\Authn\Authn\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.Google.dll

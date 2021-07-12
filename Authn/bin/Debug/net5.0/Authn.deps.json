@@ -33,6 +33,7 @@
     ".NETCoreApp,Version=v5.0": {
       "Authn/1.0.0": {
         "dependencies": {
+          "Microsoft.AspNetCore.Authentication.Google": "5.0.7",
           "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "5.0.7",
           "Microsoft.AspNetCore.Antiforgery": "5.0.0.0",
           "Microsoft.AspNetCore.Authentication.Abstractions": "5.0.0.0",
@@ -323,6 +324,17 @@
         },
         "compile": {
           "Authn.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.Google/5.0.7": {
+        "runtime": {
+          "lib/net5.0/Microsoft.AspNetCore.Authentication.Google.dll": {
+            "assemblyVersion": "5.0.7.0",
+            "fileVersion": "5.0.721.26309"
+          }
+        },
+        "compile": {
+          "lib/net5.0/Microsoft.AspNetCore.Authentication.Google.dll": {}
         }
       },
       "Microsoft.AspNetCore.Mvc.Razor.Extensions/5.0.7": {
@@ -2236,6 +2248,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Microsoft.AspNetCore.Authentication.Google/5.0.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LsI/AjzQDtJLSU/osWfIOSMT5JrOOphX0MXRJ4piMzrKOcqUzvXY4jbb7o59fsyQTyDz13eH70qKvqbMwXF6qw==",
+      "path": "microsoft.aspnetcore.authentication.google/5.0.7",
+      "hashPath": "microsoft.aspnetcore.authentication.google.5.0.7.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Mvc.Razor.Extensions/5.0.7": {
       "type": "package",
