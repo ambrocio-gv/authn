@@ -1,4 +1,5 @@
 ﻿using Authn.Models;
+using Authn.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -17,9 +18,12 @@ namespace Authn.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly UserService _userService;
+
+        public HomeController(ILogger<HomeController> logger, UserService userService)
         {
             _logger = logger;
+            _userService = userService;
         }
 
         public IActionResult Index()
@@ -85,23 +89,42 @@ namespace Authn.Controllers
         public async Task<IActionResult> Validate(string username, string password, string returnUrl)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            if (username=="gerard" && password == "pizza")
+
+            //if(_userService.TryValidateUser(username, password, out List<Claim> claims))
+            //{
+            //    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            //    var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+            //    var items = new Dictionary<string, string>();
+            //    items.Add(".AuthScheme", CookieAuthenticationDefaults.AuthenticationScheme);
+            //    var properties = new AuthenticationProperties(items);
+            //    await HttpContext.SignInAsync(claimsPrincipal, properties);
+            //    return Redirect(returnUrl);
+            //}
+            //else
+            //{
+            //    TempData["Error"] = "Error, Username or Password is invalid";
+            //    return View("login");
+            //}
+
+
+
+            if (username == "gerard" && password == "pizza")
             {
                 var claims = new List<Claim>();
                 claims.Add(new Claim("username", username));
                 claims.Add(new Claim(ClaimTypes.NameIdentifier, username));
                 claims.Add(new Claim(ClaimTypes.Name, "Gerard Ambrocio"));
-                //claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+                claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
                 var items = new Dictionary<string, string>();
                 items.Add(".AuthScheme", CookieAuthenticationDefaults.AuthenticationScheme);
                 var properties = new AuthenticationProperties(items);
-
                 await HttpContext.SignInAsync(claimsPrincipal, properties);
                 return Redirect(returnUrl);
             }
+
             TempData["Error"] = "Error. USername or Password is Invalid";
             return View("login");
         }
