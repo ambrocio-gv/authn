@@ -54,7 +54,34 @@ namespace Authn.Controllers
             return View();
         }
 
-        [HttpPost("login")]
+        [HttpGet("login/{provider}")]
+        public IActionResult LoginExternal([FromRoute] string provider, [FromQuery] string returnUrl)
+        {
+            if (User != null && User.Identities.Any(identity => identity.IsAuthenticated))
+            {
+                return RedirectToAction("", "Home");
+            }
+
+            // By default the client will be redirect back to the URL that issued the challenge (/login?authtype=foo),
+            // send them to the home page instead (/).
+            returnUrl = string.IsNullOrEmpty(returnUrl) ? "/" : returnUrl;
+            var authenticationProperties = new AuthenticationProperties { RedirectUri = returnUrl };
+            // authenticationProperties.SetParameter("prompt", "select_account");
+
+            //await HttpContext.ChallengeAsync(provider, authenticationProperties).ConfigureAwait(false) // can be used with async task
+
+            return new ChallengeResult(provider, authenticationProperties);
+        }
+
+
+
+
+
+
+
+
+        [Route("validate")]
+        [HttpPost]
         public async Task<IActionResult> Validate(string username, string password, string returnUrl)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -67,7 +94,12 @@ namespace Authn.Controllers
                 //claims.Add(new Claim(ClaimTypes.Role, "Admin"));
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                await HttpContext.SignInAsync(claimsPrincipal);
+
+                var items = new Dictionary<string, string>();
+                items.Add(".AuthScheme", CookieAuthenticationDefaults.AuthenticationScheme);
+                var properties = new AuthenticationProperties(items);
+
+                await HttpContext.SignInAsync(claimsPrincipal, properties);
                 return Redirect(returnUrl);
             }
             TempData["Error"] = "Error. USername or Password is Invalid";
@@ -77,9 +109,19 @@ namespace Authn.Controllers
         [Authorize]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync();
-            //return Redirect("/");
-            return Redirect(@"https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=https://localhost:5001");
+            var scheme = User.Claims.FirstOrDefault(c => c.Type == ".AuthScheme").Value;
+
+            if(scheme == "google")
+            {
+                await HttpContext.SignOutAsync();
+                //return Redirect("/");
+                return Redirect(@"https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=https://localhost:5001");
+            }
+            else
+            {
+                return new SignOutResult(new[] { CookieAuthenticationDefaults.AuthenticationScheme, scheme });
+
+            }
         }
 
 
