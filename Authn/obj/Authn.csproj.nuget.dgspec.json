@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Desktop\\ABC Repos\\Authn\\Authn\\Authn.csproj": {}
+    "D:\\Desktop\\TEMP\\authn\\Authn\\Authn.csproj": {}
   },
   "projects": {
-    "D:\\Desktop\\ABC Repos\\Authn\\Authn\\Authn.csproj": {
+    "D:\\Desktop\\TEMP\\authn\\Authn\\Authn.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Desktop\\ABC Repos\\Authn\\Authn\\Authn.csproj",
+        "projectUniqueName": "D:\\Desktop\\TEMP\\authn\\Authn\\Authn.csproj",
         "projectName": "Authn",
-        "projectPath": "D:\\Desktop\\ABC Repos\\Authn\\Authn\\Authn.csproj",
+        "projectPath": "D:\\Desktop\\TEMP\\authn\\Authn\\Authn.csproj",
         "packagesPath": "C:\\Users\\ABCMNLSOL08\\.nuget\\packages\\",
-        "outputPath": "D:\\Desktop\\ABC Repos\\Authn\\Authn\\obj\\",
+        "outputPath": "D:\\Desktop\\TEMP\\authn\\Authn\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ABCMNLSOL08\\AppData\\Roaming\\NuGet\\NuGet.Config",

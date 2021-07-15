@@ -48,44 +48,62 @@ namespace Authn
                     options.LoginPath = "/login";
                     options.AccessDeniedPath = "/denied";
 
+                    //options.Events = new CookieAuthenticationEvents()
+                    //{
+                    //    OnSigningIn = async context =>
+                    //    {
+                    //        var principal = context.Principal;
+                    //        if (principal.HasClaim(c => c.Type == ClaimTypes.NameIdentifier))
+                    //        {
+                    //            if (principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value == "gerard")
+                    //            {
+                    //                var claimsIdentity = principal.Identity as ClaimsIdentity;
+                    //                claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, "Admin"));
+                    //            }
+                    //        }
+                    //        await Task.CompletedTask;
+                    //    },
+                    //    OnSignedIn = async context =>
+                    //    {
+                    //        await Task.CompletedTask;
+                    //    },
+                    //    OnValidatePrincipal = async context =>
+                    //    {
+                    //        await Task.CompletedTask;
+                    //    }
+
+                    //};
+
                     options.Events = new CookieAuthenticationEvents()
                     {
                         OnSigningIn = async context =>
                         {
-                            var principal = context.Principal;
-                            if (principal.HasClaim(c => c.Type == ClaimTypes.NameIdentifier))
+                            var scheme = context.Properties.Items.Where(k => k.Key == ".AuthScheme").FirstOrDefault();
+                            var claim = new Claim(scheme.Key, scheme.Value);
+                            var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
+                            var userService = context.HttpContext.RequestServices.GetRequiredService(typeof(UserService)) as UserService;
+                            var nameIdentifier = claimsIdentity.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier)?.Value;
+                            if (userService != null && nameIdentifier != null)
                             {
-                                if (principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value == "gerard")
+                                var appUser = userService.GetUserByExternalProvider(scheme.Value, nameIdentifier);
+
+                                if(appUser is null)
                                 {
-                                    var claimsIdentity = principal.Identity as ClaimsIdentity;
-                                    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, "Admin"));
+                                    appUser = userService.AddNewUser(scheme.Value, claimsIdentity.Claims.ToList());
                                 }
+
+                                foreach(var r in appUser.RoleList)
+                                {
+                                    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, r));
+                                }
+
                             }
-                            await Task.CompletedTask;
-                        },
-                        OnSignedIn = async context =>
-                        {
-                            await Task.CompletedTask;
-                        },
-                        OnValidatePrincipal = async context =>
-                        {
-                            await Task.CompletedTask;
+
+                            claimsIdentity.AddClaim(claim);
+
+
                         }
-
                     };
-
-                    //options.Events = new CookieAuthenticationEvents()
-                    //{
-                    //   OnSigningIn = async context =>
-                    //   {
-                    //       var scheme = context.Properties.Items.Where(k => k.Key == ".AuthScheme").FirstOrDefault();
-                    //       var claim = new Claim(scheme.Key, scheme.Value);
-                    //       var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
-                    //       claimsIdentity.AddClaim(claim);
-
-
-                    //   }
-                    //};
                 })
 
                 // google built-in using nuget package, this is built on 
@@ -114,24 +132,24 @@ namespace Authn
 
 
                     options.SaveTokens = true;
-                    options.Events = new OpenIdConnectEvents()
-                    {
-                        OnTokenValidated = async context =>
-                        {
-                        if (context.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value == "112365468345858178959")//name identifier got through debug
-                            {
-                                var claim = new Claim(ClaimTypes.Role, "Admin");
-                                var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
-                                claimsIdentity.AddClaim(claim);
+                    //options.Events = new OpenIdConnectEvents()
+                    //{
+                    //    OnTokenValidated = async context =>
+                    //    {
+                    //    if (context.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value == "112365468345858178959")//name identifier got through debug
+                    //        {
+                    //            var claim = new Claim(ClaimTypes.Role, "Admin");
+                    //            var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
+                    //            claimsIdentity.AddClaim(claim);
 
 
-                            }
+                    //        }
 
 
 
                                
-                        }
-                    };
+                    //    }
+                    //};
                 })
 
                 //OKTA is an IDP
